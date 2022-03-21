@@ -1,0 +1,47 @@
+version: '3'
+
+services:
+    web:
+        build:
+            context: .
+            dockerfile: docker/php/Dockerfile
+        image: php:8.1-fpm
+        working_dir: '/var/www/'
+        volumes:
+            - '.:/var/www/'
+        networks:
+            - kit
+        depends_on:
+            - mysql
+    mysql:
+        image: mysql/mysql-server
+        ports:
+            - '${FORWARD_DB_PORT:-3306}:3306'
+        environment:
+            MYSQL_DATABASE: '${DB_DATABASE}'
+            MYSQL_USER: '${DB_USERNAME}'
+            MYSQL_PASSWORD: '${DB_PASSWORD}'
+        volumes:
+            - 'database:/var/lib/mysql'
+        networks:
+            - kit
+    webserver:
+        image: nginx:alpine
+        volumes:
+            - ./:/var/www
+            - ./docker/nginx/conf.d/:/etc/nginx/conf.d/
+        ports:
+            - "80:80"
+            - "443:443"
+        depends_on:
+            -   web
+        networks:
+            - kit
+            - web
+networks:
+    kit:
+    web:
+        driver: bridge
+volumes:
+    database:
+        driver: local
