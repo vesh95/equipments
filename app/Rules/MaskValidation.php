@@ -4,35 +4,42 @@ declare(strict_types=1);
 
 namespace App\Rules;
 
+use App\Models\Equipment;
 use App\Models\EquipmentType;
 use Illuminate\Contracts\Validation\Rule;
 
 class MaskValidation implements Rule
 {
-    private EquipmentType $equipment;
+    /**
+     * @var EquipmentType|EquipmentType[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model|mixed|object|null
+     */
+    private EquipmentType $equipmentType;
 
     /**
      * Create a new rule instance.
      *
      * @return void
      */
-    public function __construct(int $equipmentTypeId)
+    public function __construct(private Equipment $equipment)
     {
-        $this->equipment = EquipmentType::find($equipmentTypeId);
+        $this->equipmentType = EquipmentType::find(
+            ['id' => $this->equipment->equipment_type_id]
+        )->first();
     }
 
     /**
      * Determine if the validation rule passes.
      *
-     * @param  string  $attribute
-     * @param  mixed  $value
+     * @param string $attribute
+     * @param mixed $value
      * @return bool
      */
     public function passes($attribute, $value): bool
     {
-
-
-        return preg_match($this->equipment->getMaskRegex(), $value) === 1;
+        return preg_match(
+                $this->equipmentType->getMaskRegex(),
+                $this->equipment->serial_number
+            ) === 1;
     }
 
     /**
@@ -42,6 +49,6 @@ class MaskValidation implements Rule
      */
     public function message(): string
     {
-        return $this->equipment->mask;
+        return $this->equipmentType->mask;
     }
 }

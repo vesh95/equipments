@@ -38,7 +38,7 @@ class EquipmentController extends Controller
                 ],
                 [
                     'serialNumber' => [
-                        new MaskValidation($request->equipmentTypeId),
+                        new MaskValidation($equipmentModel),
                     ],
                 ]
             )->errors();
