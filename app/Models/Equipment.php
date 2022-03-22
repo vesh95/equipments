@@ -7,6 +7,7 @@ namespace App\Models;
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 
 /**
  * App\Models\Equipment
@@ -19,6 +20,14 @@ use Illuminate\Database\Eloquent\Model;
  * @method static Builder|Equipment newQuery()
  * @method static Builder|Equipment query()
  * @mixin Eloquent
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @method static Builder|Equipment whereCreatedAt($value)
+ * @method static Builder|Equipment whereEquipmentTypeId($value)
+ * @method static Builder|Equipment whereId($value)
+ * @method static Builder|Equipment whereNote($value)
+ * @method static Builder|Equipment whereSerialNumber($value)
+ * @method static Builder|Equipment whereUpdatedAt($value)
  */
 class Equipment extends Model
 {
