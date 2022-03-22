@@ -24,4 +24,22 @@ use Illuminate\Database\Eloquent\Model;
 class EquipmentType extends Model
 {
     use HasFactory;
+
+    private const MASK_REGEX_ITEMS = [
+        'N' => '[0-9]',
+        'A' => '[A-Z]',
+        'a' => '[a-z]',
+        'X' => '[A-Z0-9]',
+        'Z' => '[\-\_\@]'
+    ];
+
+    public function getMaskRegex(): string
+    {
+        $regex = '';
+        foreach (str_split($this->mask) as $char) {
+            $regex .= self::MASK_REGEX_ITEMS[$char];
+        }
+
+        return '/^' . $regex . '$/';
+    }
 }
