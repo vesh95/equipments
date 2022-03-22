@@ -15,5 +15,5 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::resource('equipment', EquipmentController::class, [
-    'only' => ['store', 'index', 'show', 'update', 'delete']
+    'only' => ['store', 'index', 'show', 'update', 'destroy']
 ]);

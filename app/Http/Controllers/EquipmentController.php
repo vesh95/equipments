@@ -94,4 +94,11 @@ class EquipmentController extends Controller
 
         return EquipmentResource::make($equipment);
     }
+
+    public function destroy(Equipment $equipment): Response
+    {
+        $equipment->delete();
+
+        return response([], 204);
+    }
 }
