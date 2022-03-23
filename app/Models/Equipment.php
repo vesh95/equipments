@@ -7,6 +7,7 @@ namespace App\Models;
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Carbon;
 
 /**
@@ -35,4 +36,13 @@ class Equipment extends Model
         'equipment_type_id',
         'serial_number'
     ];
+
+    public function equipmentType(): HasOne
+    {
+        return $this->hasOne(
+            EquipmentType::class,
+            'id',
+            'equipment_type_id'
+        );
+    }
 }

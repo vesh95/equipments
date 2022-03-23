@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Resources;
 
+use App\Models\EquipmentType;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -12,6 +13,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
  * @property int $equipment_type_id
  * @property string $serial_number
  * @property string $note
+ * @property EquipmentType $equipmentType
  */
 class EquipmentResource extends JsonResource
 {
@@ -28,6 +30,11 @@ class EquipmentResource extends JsonResource
             'equipmentTypeId' => $this->equipment_type_id,
             'serialNumber' => $this->serial_number,
             'note' => $this->note,
+            'equipmentType' => [
+                'id' => $this->equipmentType->id,
+                'name' => $this->equipmentType->name,
+                'mask' => $this->equipmentType->mask,
+            ]
         ];
     }
 }
