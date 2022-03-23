@@ -32,8 +32,17 @@ class CreateEquipmentRequest extends FormRequest
     {
         return [
             'equipmentTypeId' => 'required|exists:equipment_types,id',
-            'serialNumbers' => 'required',
-            'note' => 'string',
+            'serialNumbers' => 'array|min:1',
+            'note' => 'string|nullable',
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'equipmentTypeId.required' => 'Выберите тип оборудования',
+            'equipmentTypeId.exists' => 'Выберете тип оборорудования из списка',
+            'serialNumbers.min' => 'Введите хотя бы один серийный номер',
         ];
     }
 }

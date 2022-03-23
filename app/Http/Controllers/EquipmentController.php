@@ -8,44 +8,52 @@ use App\Http\Requests\CreateEquipmentRequest;
 use App\Http\Requests\PutEquipmentRequest;
 use App\Http\Resources\EquipmentResource;
 use App\Models\Equipment;
+use App\Models\EquipmentType;
 use App\Rules\MaskValidation;
 use Illuminate\Database\QueryException;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Validator;
 
 class EquipmentController extends Controller
 {
-    public function index(): AnonymousResourceCollection
+    public function index()
     {
-        return EquipmentResource::collection(Equipment::all());
+        return EquipmentResource::collection(Equipment::all()->load('equipmentType'));
     }
 
     public function store(CreateEquipmentRequest $request): array
     {
         $models = [];
         $errors = [];
-        foreach ($request->serialNumbers as $serialNumber) {
+        $equipmentTypeModel = EquipmentType::where([
+            'id' => $request->equipmentTypeId
+        ])
+            ->first();
+        foreach ($request->serialNumbers as $key => $serialNumber) {
             $equipmentModel = new Equipment([
                 'equipment_type_id' => $request->equipmentTypeId,
                 'serial_number' => $serialNumber,
                 'note' => $request->note,
             ]);
 
-
             $error = Validator::make(
                 [
-                    'serialNumber' => $serialNumber
+                    $equipmentTypeModel->name => $serialNumber
                 ],
                 [
-                    'serialNumber' => [
+                    $equipmentTypeModel->name => [
                         new MaskValidation($equipmentModel),
                     ],
                 ]
             )->errors();
             if ($error->isNotEmpty()) {
-                $errors[$serialNumber] = $error;
+                $errors[$key] = [
+                    'typeId' => $equipmentTypeModel->id,
+                    'name' => $equipmentTypeModel->name,
+                    'mask' => $error->first(),
+                    'value' => $serialNumber
+                ];
 
                 continue;
             }
@@ -60,8 +68,8 @@ class EquipmentController extends Controller
         }
 
         return [
-            'models' => $models,
-            'errors' => $errors,
+            'equipments' => $models,
+            'invalidSerials' => $errors,
         ];
     }
 
