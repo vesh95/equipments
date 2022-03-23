@@ -46,7 +46,7 @@
             </table>
         </div>
         <div class="action-group mt-2">
-            <button @click="sendEquipment">Добавить</button>
+            <button class="btn btn-success" @click="sendEquipment">Добавить</button>
         </div>
     </div>
 </template>
