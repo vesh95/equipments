@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\EquipmentController;
+use App\Http\Controllers\EquipmentTypeController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,6 +15,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::resource('equipment', EquipmentController::class, [
+Route::apiResource('equipment/type', EquipmentTypeController::class, [
+    'only' => ['index']
+]);
+
+Route::apiResource('equipment', EquipmentController::class, [
     'only' => ['store', 'index', 'show', 'update', 'destroy']
 ]);
