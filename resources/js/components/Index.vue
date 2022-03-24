@@ -38,12 +38,17 @@
                 <td>{{ equipment.serialNumber }}</td>
                 <td>{{ equipment.note }}</td>
                 <td>
-                    <button
-                        class="btn btn-sm btn-danger"
-                        v-on:click="deleteEquipment(equipment.id)"
-                    >
-                        Удалить
-                    </button>
+                    <div class="btn-group">
+                        <button
+                            class="btn btn-sm btn-danger"
+                            v-on:click="deleteEquipment(equipment.id)"
+                        >
+                            Удалить
+                        </button>
+                        <RouterLink :to="`/edit/${equipment.id}`" class="btn btn-sm btn-primary">
+                            Редактировать
+                        </RouterLink>
+                    </div>
                 </td>
             </tr>
         </table>

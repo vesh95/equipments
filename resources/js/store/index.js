@@ -21,6 +21,10 @@ const store = createStore({
         appendEquipments(state, data) {
             state.equipments = [...state.equipments, ...data.equipments]
         },
+        updateEquipment(state, data) {
+            const item = state.equipments.find((value) => value.id === data.id)
+            Object.assign(item, data)
+        }
     },
 })
 
