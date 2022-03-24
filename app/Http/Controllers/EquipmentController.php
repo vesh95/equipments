@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Handlers\EquipmentUpdateHandler;
 use App\Http\Requests\CreateEquipmentRequest;
 use App\Http\Requests\PutEquipmentRequest;
 use App\Http\Resources\EquipmentResource;
@@ -80,26 +81,15 @@ class EquipmentController extends Controller
 
     public function update(PutEquipmentRequest $request, Equipment $equipment): Response|EquipmentResource
     {
+        $lastErrors = (new EquipmentUpdateHandler($equipment, $request))
+            ->handle();
+        if ($lastErrors !== null && !$lastErrors->errors()->isEmpty()) {
+            return response($lastErrors->errors(), 422);
+        }
+
         $equipment->fill([
-            'equipment_type_id' => $request->equipmentTypeId,
-            'serial_number' => $request->serialNumber,
             'note' => $request->note,
         ]);
-
-        if ($equipment->serial_number !== $request->serialNumber) {
-            $e = Validator::make([
-                'serialNumber' => $request->serialNumber,
-            ], [
-                'serialNumber' => [
-                    'unique:equipment,serial_number',
-                    new MaskValidation($equipment),
-                ]
-            ]);
-
-            if (!$e->errors()->isEmpty()) {
-                return response($e->errors(), 422);
-            }
-        }
 
         $equipment->update();
 
