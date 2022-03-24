@@ -12,19 +12,21 @@
     </div>
 </template>
 <script>
-import { RouterLink } from 'vue-router'
+import {RouterLink} from 'vue-router'
 import store from "../store";
+import EquipmentClient from "../clients/EquipmentClient";
 
 export default {
     components: {
         RouterLink
     },
     mounted() {
-        axios.get('/api/equipment').then((response) => {
-            store.commit('loadEquipments', {
-                equipments: response.data.data
+        EquipmentClient.fetchAll()
+            .then((response) => {
+                store.commit('loadEquipments', {
+                    equipments: response.data.data
+                })
             })
-        })
 
         axios.get('/api/equipment/type').then((response) => {
             const options = response.data.data.map((value) => {

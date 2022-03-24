@@ -40,6 +40,7 @@
 import store from "../store";
 import router from "../router";
 import ErrorAttribute from "./ErrorAttribute";
+import EquipmentClient from "../clients/EquipmentClient";
 
 export default {
     components: {
@@ -53,7 +54,7 @@ export default {
         }
     },
     mounted() {
-        axios.get(`/api/equipment/${this.$route.params.id}`)
+        EquipmentClient.fetchById(this.$route.params.id)
             .then((response) => {
                 this.formData = response.data.data
             })
@@ -61,7 +62,7 @@ export default {
     },
     methods: {
         updateEquipments() {
-            axios.patch(`/api/equipment/${this.formData.id}`, {
+            EquipmentClient.update(this.formData.id, {
                 equipmentTypeId: this.formData.equipmentTypeId,
                 serialNumber: this.formData.serialNumber,
                 note: this.formData.note

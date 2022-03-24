@@ -54,6 +54,7 @@
 </template>
 <script>
 import store from "../store";
+import EquipmentClient from "../clients/EquipmentClient";
 
 export default {
     name: 'EquipmentForm',
@@ -76,7 +77,7 @@ export default {
             this.formData.serialNumbers.splice(id, 1)
         },
         sendEquipment() {
-            axios.post('/api/equipment', this.formData)
+            EquipmentClient.create(this.formData)
                 .then((response) => {
                     this.errors = null
                     const responseData = response.data

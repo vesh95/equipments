@@ -56,13 +56,10 @@
 </template>
 
 <script>
-import EquipmentForm from './EquipmentForm';
+import EquipmentClient from "../clients/EquipmentClient";
 import store from "../store";
 
 export default {
-    components: {
-        EquipmentForm
-    },
     data() {
         return {
             filterList: {
@@ -77,7 +74,7 @@ export default {
     },
     methods: {
         deleteEquipment: (id) => {
-            axios.delete(`/api/equipment/${id}`).then(() => {
+            EquipmentClient.delete(id).then(() => {
                 store.commit('removeEquipments', {id})
             })
         },
