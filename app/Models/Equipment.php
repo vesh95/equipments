@@ -34,7 +34,8 @@ class Equipment extends Model
 {
     protected $fillable = [
         'equipment_type_id',
-        'serial_number'
+        'serial_number',
+        'note'
     ];
 
     public function equipmentType(): HasOne
