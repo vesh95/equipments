@@ -85,17 +85,20 @@ class EquipmentController extends Controller
             'serial_number' => $request->serialNumber,
             'note' => $request->note,
         ]);
-        $e = Validator::make([
-            'serialNumber' => $request->serialNumber,
-        ], [
-            'serialNumber' => [
-                'unique:equipment,serial_number',
-                new MaskValidation($equipment),
-            ]
-        ]);
 
-        if (!$e->errors()->isEmpty()) {
-            return response($e->errors(), 422);
+        if ($equipment->serial_number !== $request->serialNumber) {
+            $e = Validator::make([
+                'serialNumber' => $request->serialNumber,
+            ], [
+                'serialNumber' => [
+                    'unique:equipment,serial_number',
+                    new MaskValidation($equipment),
+                ]
+            ]);
+
+            if (!$e->errors()->isEmpty()) {
+                return response($e->errors(), 422);
+            }
         }
 
         $equipment->update();
