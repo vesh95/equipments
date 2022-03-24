@@ -38,7 +38,7 @@ class MaskValidation implements Rule
     {
         return preg_match(
                 $this->equipmentType->getMaskRegex(),
-                $this->equipment->serial_number
+                (string)$this->equipment->serial_number
             ) === 1;
     }
 

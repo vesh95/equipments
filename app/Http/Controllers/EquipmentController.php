@@ -12,13 +12,14 @@ use App\Models\Equipment;
 use App\Models\EquipmentType;
 use App\Rules\MaskValidation;
 use Illuminate\Database\QueryException;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Validator;
 
 class EquipmentController extends Controller
 {
-    public function index()
+    public function index(): AnonymousResourceCollection
     {
         return EquipmentResource::collection(Equipment::all()->load('equipmentType'));
     }
