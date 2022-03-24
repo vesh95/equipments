@@ -3,28 +3,53 @@
         <div class="row justify-content-center mt-1">
             <EquipmentForm v-on:appendEquipment="appendEquipments" :options="options"/>
         </div>
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card mb-3" v-for="equipment in equipments">
-                    <div class="card-header">
-                        {{ equipment.serialNumber }}
-                        {{ equipment.equipmentType.name }}
-
-                    </div>
-                    <div class="card-body">
-                        {{ equipment.note || '(Без заметок)' }}
-                    </div>
-                    <div class="card-footer">
-                        <button
-                            class="btn btn-danger"
-                            v-on:click="deleteEquipment(equipment.id)"
+        <h2>Оборудование</h2>
+        <table class="table">
+            <tr>
+                <td>
+                    <input v-model="filterList.id" class="form-control">
+                </td>
+                <td>
+                    <select v-model="filterList.equipmentTypeId" class="form-control">
+                        <option :value="null"></option>
+                        <option
+                            v-for="option in options"
+                            :value="option.value"
                         >
-                            Удалить
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
+                            {{ option.label }}
+                        </option>
+                    </select>
+                </td>
+                <td>
+                    <input v-model="filterList.serialNumber" class="form-control">
+                </td>
+                <td>
+                    <input v-model="filterList.note" class="form-control">
+                </td>
+                <th></th>
+            </tr>
+            <tr>
+                <th>ID</th>
+                <th>Тип оборудования</th>
+                <th>S/N</th>
+                <th>Примечание</th>
+                <th></th>
+            </tr>
+            <tr v-for="equipment in filteredList">
+                <td>{{ equipment.id }}</td>
+                <td>{{ equipment.equipmentType.name }}</td>
+                <td>{{ equipment.serialNumber }}</td>
+                <td>{{ equipment.note }}</td>
+                <td>
+                    <button
+                        class="btn btn-sm btn-danger"
+                        v-on:click="deleteEquipment(equipment.id)"
+                    >
+                        Удалить
+                    </button>
+                </td>
+            </tr>
+        </table>
     </div>
 </template>
 
@@ -39,6 +64,12 @@ export default {
         return {
             equipments: [],
             options: [],
+            filterList: {
+                id: "",
+                equipmentTypeId: null,
+                serialNumber: "",
+                note: "",
+            },
         }
     },
     mounted() {
@@ -65,6 +96,18 @@ export default {
         },
         appendEquipments(equipments) {
             this.equipments = [...this.equipments, ...equipments]
+        },
+    },
+    computed: {
+        filteredList() {
+            return this.equipments
+                .filter(equipment => this.filterList.id === "" || Number(this.filterList.id) === equipment.id)
+                .filter(equipment => {
+                    return this.filterList.equipmentTypeId === null
+                        || this.filterList.equipmentTypeId === equipment.equipmentType.id
+                })
+                .filter(equipment => this.filterList.serialNumber === "" || this.filterList.serialNumber === equipment.serialNumber)
+                .filter(equipment => this.filterList.note === "" || this.filterList.note === equipment.note)
         }
     }
 }
