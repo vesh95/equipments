@@ -1,10 +1,11 @@
+import App from "./components/App";
+import store from './store'
+import {createApp} from "vue";
+import router from "./router";
+
 require('./bootstrap');
 
-window.Vue = require('vue').default;
-
-import App from './components/App';
-
-const app = new Vue({
-    el: '#app',
-    render: h => h(App)
-});
+createApp(App)
+    .use(router)
+    .use(store)
+    .mount('#app');
