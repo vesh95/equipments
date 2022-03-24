@@ -1,13 +1,13 @@
 <template>
     <div id="app">
-        <h1>Оборудование</h1>
-        <p>
-            <RouterLink to="/">Список</RouterLink>
-            |
-            <RouterLink to="/new">Добавить</RouterLink>
-        </p>
-        <!-- route outlet -->
-        <!-- component matched by the route will render here -->
+        <div class="container">
+            <h1>Оборудование</h1>
+            <p>
+                <RouterLink to="/">Список</RouterLink>
+                |
+                <RouterLink to="/new">Добавить</RouterLink>
+            </p>
+        </div>
         <router-view></router-view>
     </div>
 </template>
@@ -15,6 +15,7 @@
 import {RouterLink} from 'vue-router'
 import store from "../store";
 import EquipmentClient from "../clients/EquipmentClient";
+import EquipmentTypeClient from "../clients/EquipmentTypeClient";
 
 export default {
     components: {
@@ -28,16 +29,17 @@ export default {
                 })
             })
 
-        axios.get('/api/equipment/type').then((response) => {
-            const options = response.data.data.map((value) => {
-                return {
-                    'value': value.id,
-                    'label': value.name,
-                }
-            })
+        EquipmentTypeClient.fetchAll()
+            .then((response) => {
+                const options = response.data.data.map((value) => {
+                    return {
+                        'value': value.id,
+                        'label': value.name,
+                    }
+                })
 
-            store.commit('loadOptions', {options})
-        })
+                store.commit('loadOptions', {options})
+            })
     }
 }
 </script>
