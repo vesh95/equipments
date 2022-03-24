@@ -26,6 +26,17 @@ const store = createStore({
             Object.assign(item, data)
         }
     },
+    getters: {
+        equipmentTypeOptions(state) {
+            return state.options
+                .map((option) => {
+                    return {
+                        label: option.name,
+                        value: option.id
+                    }
+                })
+        }
+    }
 })
 
 export default store

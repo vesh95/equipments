@@ -7,7 +7,7 @@
                 class="form-control"
                 v-model="formData.serialNumber"
             >
-            <error-attribute :errors="errors.serialNumber" />
+            <ErrorAttribute :errors="serialNumberErrors" />
         </div>
         <div class="form-group">
             <select class="form-control" v-model="formData.equipmentTypeId">
@@ -78,7 +78,18 @@ export default {
     },
     computed: {
         options() {
-            return this.$store.state.options
+            return this.$store.getters.equipmentTypeOptions
+        },
+        serialNumberErrors() {
+            let errors = []
+            if (this.formData.serialNumber === "") {
+                errors.push('Серийный номер не может быть пустым')
+            }
+            if (this.errors.serialNumber) {
+                errors.push(`Серийный номер должен иметь маску ${this.errors.serialNumber[0]}`)
+            }
+
+            return errors
         }
     }
 }

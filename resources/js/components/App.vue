@@ -30,16 +30,10 @@ export default {
             })
 
         EquipmentTypeClient.fetchAll()
-            .then((response) => {
-                const options = response.data.data.map((value) => {
-                    return {
-                        'value': value.id,
-                        'label': value.name,
-                    }
+            .then((response) => store.commit('loadOptions', {
+                    options: response.data.data
                 })
-
-                store.commit('loadOptions', {options})
-            })
+            )
     }
 }
 </script>

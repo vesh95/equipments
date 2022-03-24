@@ -82,16 +82,16 @@ export default {
     computed: {
         filteredList() {
             return this.$store.state.equipments
-                .filter(equipment => this.filterList.id === "" || Number(this.filterList.id) === equipment.id)
+                .filter(equipment => String(equipment.id).includes(this.filterList.id))
                 .filter(equipment => {
                     return this.filterList.equipmentTypeId === null
-                        || this.filterList.equipmentTypeId === equipment.equipmentType.id
+                        || this.filterList.equipmentTypeId === (equipment.equipmentType.id || null)
                 })
-                .filter(equipment => this.filterList.serialNumber === "" || this.filterList.serialNumber === equipment.serialNumber)
-                .filter(equipment => this.filterList.note === "" || this.filterList.note === equipment.note)
+                .filter(equipment => equipment.serialNumber.includes(this.filterList.serialNumber))
+                .filter(equipment => String(equipment.note).includes(this.filterList.note))
         },
         options() {
-            return this.$store.state.options
+            return this.$store.getters.equipmentTypeOptions
         }
     }
 }
