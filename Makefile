@@ -1,5 +1,8 @@
 install: up composer migrate
 
+exec:
+	@docker-compose exec web bash
+
 up:
 	@docker-compose up -d
 
