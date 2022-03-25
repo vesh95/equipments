@@ -4,14 +4,13 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Handlers\EquipmentCreateHandler;
+use App\Handlers\CreateEquipmentsHandler;
 use App\Handlers\EquipmentUpdateHandler;
 use App\Http\Requests\CreateEquipmentRequest;
 use App\Http\Requests\PutEquipmentRequest;
+use App\Http\Resources\CreatedEquipmentResource;
 use App\Http\Resources\EquipmentResource;
 use App\Models\Equipment;
-use App\Models\EquipmentType;
-use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
@@ -30,51 +29,22 @@ class EquipmentController extends Controller
      */
     public function index(Request $request): AnonymousResourceCollection
     {
-        return EquipmentResource::collection(Equipment::all()->load('equipmentType'));
+        return EquipmentResource::collection(Equipment::paginate(
+            $request->query('perPage', 15)
+        ));
     }
 
     /**
      * POST /api/equipment
      *
      * @param CreateEquipmentRequest $request
-     * @return array
+     * @return CreatedEquipmentResource
      */
-    public function store(CreateEquipmentRequest $request): array
+    public function store(CreateEquipmentRequest $request): CreatedEquipmentResource
     {
-        $models = [];
-        $errors = [];
-        $equipmentTypeModel = EquipmentType::where([
-            'id' => $request->equipmentTypeId
-        ])
-            ->first();
-        foreach ($request->serialNumbers as $key => $serialNumber) {
-            $equipmentModel = new Equipment([
-                'equipment_type_id' => $request->equipmentTypeId,
-                'serial_number' => $serialNumber,
-                'note' => $request->note,
-            ]);
+        $creationResults = (new CreateEquipmentsHandler($request))->handle();
 
-            $error = (new EquipmentCreateHandler($equipmentTypeModel, $equipmentModel))
-                ->handle();
-            if ($error !== null) {
-                $errors[$key] = $error;
-
-                continue;
-            }
-
-            try {
-                if ($equipmentModel->save()) {
-                    $models[] = EquipmentResource::make($equipmentModel);
-                }
-            } catch (QueryException) {
-                continue;
-            }
-        }
-
-        return [
-            'equipments' => $models,
-            'invalidSerials' => $errors,
-        ];
+        return CreatedEquipmentResource::make($creationResults);
     }
 
     /**
