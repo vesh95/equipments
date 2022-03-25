@@ -2,21 +2,13 @@
 
 namespace App\Http\Resources;
 
-use Illuminate\Contracts\Support\Arrayable;
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use JsonSerializable;
 
+/**
+ * @property int $id
+ * @property string $name
+ * @property string $mask
+ */
 class EquipmentTypeResource extends JsonResource
 {
-    /**
-     * Transform the resource into an array.
-     *
-     * @param  Request  $request
-     * @return array|Arrayable|JsonSerializable
-     */
-    public function toArray($request): array|JsonSerializable|Arrayable
-    {
-        return parent::toArray($request);
-    }
 }

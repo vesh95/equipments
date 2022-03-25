@@ -12,17 +12,33 @@ use App\Http\Resources\EquipmentResource;
 use App\Models\Equipment;
 use App\Models\EquipmentType;
 use Illuminate\Database\QueryException;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 
+/**
+ * EquipmentController class
+ */
 class EquipmentController extends Controller
 {
-    public function index(): AnonymousResourceCollection
+    /**
+     * GET /api/equipment
+     *
+     * @param Request $request
+     * @return AnonymousResourceCollection
+     */
+    public function index(Request $request): AnonymousResourceCollection
     {
         return EquipmentResource::collection(Equipment::all()->load('equipmentType'));
     }
 
+    /**
+     * POST /api/equipment
+     *
+     * @param CreateEquipmentRequest $request
+     * @return array
+     */
     public function store(CreateEquipmentRequest $request): array
     {
         $models = [];
@@ -61,11 +77,24 @@ class EquipmentController extends Controller
         ];
     }
 
+    /**
+     * GET /api/equipment/:id
+     *
+     * @param Equipment $equipment
+     * @return EquipmentResource
+     */
     public function show(Equipment $equipment): EquipmentResource
     {
         return EquipmentResource::make($equipment);
     }
 
+    /**
+     * PATH /api/equipment/:id
+     *
+     * @param PutEquipmentRequest $request
+     * @param Equipment $equipment
+     * @return Response|EquipmentResource
+     */
     public function update(PutEquipmentRequest $request, Equipment $equipment): Response|EquipmentResource
     {
         $lastErrors = (new EquipmentUpdateHandler($equipment, $request))
@@ -83,6 +112,12 @@ class EquipmentController extends Controller
         return EquipmentResource::make($equipment);
     }
 
+    /**
+     * DELETE /api/equipment/:id
+     *
+     * @param Equipment $equipment
+     * @return Response
+     */
     public function destroy(Equipment $equipment): Response
     {
         $equipment->delete();

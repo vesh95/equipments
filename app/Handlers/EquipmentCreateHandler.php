@@ -9,8 +9,19 @@ use App\Models\EquipmentType;
 use App\Rules\MaskValidation;
 use Validator;
 
+/**
+ * EquipmentCreateHandler
+ *
+ * Returns validation errors
+ *
+ * @package App\Handlers
+ */
 final class EquipmentCreateHandler
 {
+    /**
+     * @param EquipmentType $equipmentTypeModel
+     * @param Equipment $equipment
+     */
     public function __construct(
         private EquipmentType $equipmentTypeModel,
         private Equipment     $equipment
@@ -18,6 +29,9 @@ final class EquipmentCreateHandler
     {
     }
 
+    /**
+     * @return array|null
+     */
     public function handle(): ?array
     {
         $error = Validator::make(

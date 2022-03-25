@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Http\Resources;
 
-use App\Models\EquipmentType;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -13,7 +12,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
  * @property int $equipment_type_id
  * @property string $serial_number
  * @property string $note
- * @property EquipmentType $equipmentType
+ * @property EquipmentTypeResource $equipmentType
  */
 class EquipmentResource extends JsonResource
 {
