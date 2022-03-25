@@ -22991,7 +22991,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
       _clients_EquipmentClient__WEBPACK_IMPORTED_MODULE_1__["default"].create(this.formData).then(function (response) {
         _this.errors = null;
-        var responseData = response.data;
+        var responseData = response.data.data;
         _this.invalidSerials = responseData.invalidSerials;
         _store__WEBPACK_IMPORTED_MODULE_0__["default"].commit('appendEquipments', {
           equipments: responseData.equipments
