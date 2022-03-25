@@ -83,7 +83,7 @@ export default {
             EquipmentClient.create(this.formData)
                 .then((response) => {
                     this.errors = null
-                    const responseData = response.data
+                    const responseData = response.data.data
                     this.invalidSerials = responseData.invalidSerials
                     store.commit('appendEquipments', {equipments: responseData.equipments})
                     this.formData = {
