@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\EquipmentUpdateException;
 use App\Handlers\CreateEquipmentsHandler;
 use App\Handlers\EquipmentUpdateHandler;
 use App\Http\Requests\CreateEquipmentRequest;
@@ -67,19 +68,13 @@ class EquipmentController extends Controller
      */
     public function update(PutEquipmentRequest $request, Equipment $equipment): Response|EquipmentResource
     {
-        $lastErrors = (new EquipmentUpdateHandler($equipment, $request))
-            ->handle();
-        if ($lastErrors !== null && !$lastErrors->errors()->isEmpty()) {
-            return response($lastErrors->errors(), 422);
+        try {
+            $equipment = (new EquipmentUpdateHandler($equipment, $request))->handle();
+
+            return EquipmentResource::make($equipment);
+        } catch (EquipmentUpdateException $e) {
+            return response($e->getErrors(), 422);
         }
-
-        $equipment->fill([
-            'note' => $request->note,
-        ]);
-
-        $equipment->update();
-
-        return EquipmentResource::make($equipment);
     }
 
     /**

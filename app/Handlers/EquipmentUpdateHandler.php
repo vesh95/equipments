@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Handlers;
 
+use App\Exceptions\EquipmentUpdateException;
 use App\Http\Requests\PutEquipmentRequest;
 use App\Models\Equipment;
 use App\Rules\MaskValidation;
@@ -30,9 +31,10 @@ final class EquipmentUpdateHandler
     }
 
     /**
-     * @return \Illuminate\Validation\Validator|null
+     * @return Equipment
+     * @throws EquipmentUpdateException
      */
-    public function handle(): ?\Illuminate\Validation\Validator
+    public function handle(): Equipment
     {
         if ($this->equipment->serial_number !== $this->request->serialNumber) {
             $this->equipment->serial_number = $this->request->serialNumber;
@@ -49,7 +51,7 @@ final class EquipmentUpdateHandler
             );
 
             if ($validator->errors()->isNotEmpty()) {
-                return $validator;
+                throw new EquipmentUpdateException($validator->errors());
             }
         }
         if ($this->equipment->equipment_type_id !== $this->request->equipmentTypeId) {
@@ -69,9 +71,9 @@ final class EquipmentUpdateHandler
         );
 
         if ($validator->errors()->isNotEmpty()) {
-            return $validator;
+            throw new EquipmentUpdateException($validator->errors());
         }
 
-        return null;
+        return $this->equipment;
     }
 }
