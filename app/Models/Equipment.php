@@ -7,7 +7,7 @@ namespace App\Models;
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 
 /**
@@ -17,6 +17,7 @@ use Illuminate\Support\Carbon;
  * @property int $equipment_type_id
  * @property string $serial_number
  * @property string $note
+ * @property EquipmentType $equipmentType
  * @method static Builder|Equipment newModelQuery()
  * @method static Builder|Equipment newQuery()
  * @method static Builder|Equipment query()
@@ -38,12 +39,12 @@ class Equipment extends Model
         'note'
     ];
 
-    public function equipmentType(): HasOne
+    public function equipmentType(): BelongsTo
     {
-        return $this->hasOne(
+        return $this->belongsTo(
             EquipmentType::class,
+            'equipment_type_id',
             'id',
-            'equipment_type_id'
         );
     }
 }

@@ -6,6 +6,7 @@ use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * App\Models\EquipmentType
@@ -13,6 +14,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $id
  * @property string $name
  * @property string $mask
+ * @property Equipment[] $equipments
  * @method static Builder|EquipmentType newModelQuery()
  * @method static Builder|EquipmentType newQuery()
  * @method static Builder|EquipmentType query()
@@ -41,5 +43,13 @@ class EquipmentType extends Model
         }
 
         return '/^' . $regex . '$/';
+    }
+
+    public function equipments(): HasMany
+    {
+        return $this->hasMany(
+            Equipment::class,
+            'equipment_type_id',
+            'id');
     }
 }
