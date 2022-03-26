@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Handlers;
 
 use App\Exceptions\EquipmentUpdateException;
-use App\Http\Requests\PutEquipmentRequest;
+use App\Interfaces\UpdateEquipmentDataInterface;
 use App\Models\Equipment;
 use App\Rules\MaskValidation;
 use Validator;
@@ -13,7 +13,7 @@ use Validator;
 /**
  * EquipmentUpdateHandler
  *
- * Returns validation errors
+ * Returns validation errors and saves updated equipment
  *
  * @package App\Handlers
  */
@@ -21,11 +21,11 @@ final class EquipmentUpdateHandler
 {
     /**
      * @param Equipment $equipment
-     * @param PutEquipmentRequest $request
+     * @param UpdateEquipmentDataInterface $updateEquipmentData
      */
     public function __construct(
-        private Equipment           $equipment,
-        private PutEquipmentRequest $request,
+        private Equipment                    $equipment,
+        private UpdateEquipmentDataInterface $updateEquipmentData,
     )
     {
     }
@@ -36,11 +36,11 @@ final class EquipmentUpdateHandler
      */
     public function handle(): Equipment
     {
-        if ($this->equipment->serial_number !== $this->request->serialNumber) {
-            $this->equipment->serial_number = $this->request->serialNumber;
+        if ($this->equipment->serial_number !== $this->updateEquipmentData->getSerialNumber()) {
+            $this->equipment->serial_number = $this->updateEquipmentData->getSerialNumber();
             $validator = Validator::make(
                 [
-                    'serialNumber' => $this->request->serialNumber,
+                    'serialNumber' => $this->updateEquipmentData->getSerialNumber(),
                 ],
                 [
                     'serialNumber' => 'unique:equipment,serial_number',
@@ -54,13 +54,13 @@ final class EquipmentUpdateHandler
                 throw new EquipmentUpdateException($validator->errors());
             }
         }
-        if ($this->equipment->equipment_type_id !== $this->request->equipmentTypeId) {
-            $this->equipment->equipment_type_id = $this->request->equipmentTypeId;
+        if ($this->equipment->equipment_type_id !== $this->updateEquipmentData->getEquipmentTypeId()) {
+            $this->equipment->equipment_type_id = $this->updateEquipmentData->getEquipmentTypeId();
         }
 
         $validator = Validator::make(
             [
-                'serialNumber' => $this->request->serialNumber,
+                'serialNumber' => $this->updateEquipmentData->getSerialNumber(),
             ],
             [
                 'serialNumber' => new MaskValidation($this->equipment)

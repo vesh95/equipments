@@ -2,22 +2,32 @@
 
 namespace App\Handlers;
 
-use App\Http\Requests\CreateEquipmentRequest;
-use App\Http\Resources\EquipmentResource;
+use App\Interfaces\CreateEquipmentDataInterface;
 use App\Models\Equipment;
 use App\Models\EquipmentType;
 use App\Rules\MaskValidation;
 use Illuminate\Database\QueryException;
 use Validator;
 
+/**
+ * CreateEquipmentsHandler class
+ *
+ * Handle equipment creation from CreateEquipmentData
+ */
 final class CreateEquipmentsHandler
 {
+    /**
+     * @param CreateEquipmentDataInterface $equipmentListData
+     */
     public function __construct(
-        private CreateEquipmentRequest $equipmentRequest
+        private CreateEquipmentDataInterface $equipmentListData
     )
     {
     }
 
+    /**
+     * @return array
+     */
     public function handle(): array
     {
         $result = [
@@ -25,15 +35,15 @@ final class CreateEquipmentsHandler
             'invalidSerials' => [],
         ];
         $equipmentTypeModel = EquipmentType::where([
-            'id' => $this->equipmentRequest->equipmentTypeId
+            'id' => $this->equipmentListData->getEquipmentTypeId()
         ])
             ->first();
 
-        foreach ($this->equipmentRequest->serialNumbers as $key => $serialNumber) {
+        foreach ($this->equipmentListData->getSerialNumbers() as $key => $serialNumber) {
             $equipmentModel = new Equipment([
-                'equipment_type_id' => $this->equipmentRequest->equipmentTypeId,
+                'equipment_type_id' => $this->equipmentListData->getEquipmentTypeId(),
                 'serial_number' => $serialNumber,
-                'note' => $this->equipmentRequest->note,
+                'note' => $this->equipmentListData->getNote(),
             ]);
 
             $error = Validator::make(

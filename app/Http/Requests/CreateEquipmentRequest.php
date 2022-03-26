@@ -4,14 +4,15 @@ declare(strict_types=1);
 
 namespace App\Http\Requests;
 
+use App\Interfaces\CreateEquipmentDataInterface;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
  * @property string[] $serialNumbers
  * @property int $equipmentTypeId
- * @property string $note
+ * @property null|string $note
  */
-class CreateEquipmentRequest extends FormRequest
+class CreateEquipmentRequest extends FormRequest implements CreateEquipmentDataInterface
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -47,5 +48,29 @@ class CreateEquipmentRequest extends FormRequest
             'equipmentTypeId.exists' => 'Выберете тип оборорудования из списка',
             'serialNumbers.min' => 'Введите хотя бы один серийный номер',
         ];
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getSerialNumbers(): array
+    {
+        return $this->serialNumbers;
+    }
+
+    /**
+     * @return int
+     */
+    public function getEquipmentTypeId(): int
+    {
+        return $this->equipmentTypeId;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getNote(): ?string
+    {
+        return $this->note;
     }
 }

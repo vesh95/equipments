@@ -4,15 +4,16 @@ declare(strict_types=1);
 
 namespace App\Http\Requests;
 
+use App\Interfaces\UpdateEquipmentDataInterface;
 use Illuminate\Foundation\Http\FormRequest;
 
 
 /**
- * @property int $equipmentTypeId
- * @property string $note
- * @property string $serialNumber
+ * @property int|null $equipmentTypeId
+ * @property string|null $note
+ * @property string|null $serialNumber
  */
-class PutEquipmentRequest extends FormRequest
+class PatchEquipmentRequest extends FormRequest implements UpdateEquipmentDataInterface
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -35,5 +36,20 @@ class PutEquipmentRequest extends FormRequest
             'equipmentTypeId' => 'exists:equipment_types,id',
             'note' => 'string|nullable'
         ];
+    }
+
+    public function getSerialNumber(): ?string
+    {
+        return $this->serialNumber;
+    }
+
+    public function getEquipmentTypeId(): ?int
+    {
+        return $this->equipmentTypeId;
+    }
+
+    public function getNote(): ?string
+    {
+        return $this->note;
     }
 }

@@ -8,7 +8,7 @@ use App\Exceptions\EquipmentUpdateException;
 use App\Handlers\CreateEquipmentsHandler;
 use App\Handlers\EquipmentUpdateHandler;
 use App\Http\Requests\CreateEquipmentRequest;
-use App\Http\Requests\PutEquipmentRequest;
+use App\Http\Requests\PatchEquipmentRequest;
 use App\Http\Resources\CreatedEquipmentResource;
 use App\Http\Resources\EquipmentResource;
 use App\Models\Equipment;
@@ -62,11 +62,11 @@ class EquipmentController extends Controller
     /**
      * PATH /api/equipment/:id
      *
-     * @param PutEquipmentRequest $request
+     * @param PatchEquipmentRequest $request
      * @param Equipment $equipment
      * @return Response|EquipmentResource
      */
-    public function update(PutEquipmentRequest $request, Equipment $equipment): Response|EquipmentResource
+    public function update(PatchEquipmentRequest $request, Equipment $equipment): Response|EquipmentResource
     {
         try {
             $equipment = (new EquipmentUpdateHandler($equipment, $request))->handle();
