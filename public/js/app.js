@@ -22848,6 +22848,10 @@ __webpack_require__.r(__webpack_exports__);
       _store__WEBPACK_IMPORTED_MODULE_0__["default"].commit('loadEquipments', {
         equipments: response.data.data
       });
+      _store__WEBPACK_IMPORTED_MODULE_0__["default"].commit('setPagination', {
+        page: response.data.meta.current_page,
+        totalPage: response.data.meta.last_page
+      });
     });
     _clients_EquipmentTypeClient__WEBPACK_IMPORTED_MODULE_2__["default"].fetchAll().then(function (response) {
       return _store__WEBPACK_IMPORTED_MODULE_0__["default"].commit('loadOptions', {
@@ -23080,9 +23084,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _clients_EquipmentClient__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../clients/EquipmentClient */ "./resources/js/clients/EquipmentClient.js");
 /* harmony import */ var _store__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../store */ "./resources/js/store/index.js");
+/* harmony import */ var vuejs_paginate_next__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vuejs-paginate-next */ "./node_modules/vuejs-paginate-next/dist/vuejs-paginate-next.es.js");
+
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  components: {
+    Paginate: vuejs_paginate_next__WEBPACK_IMPORTED_MODULE_2__["default"]
+  },
   data: function data() {
     return {
       filterList: {
@@ -23099,6 +23108,19 @@ __webpack_require__.r(__webpack_exports__);
       _clients_EquipmentClient__WEBPACK_IMPORTED_MODULE_0__["default"]["delete"](id).then(function () {
         _store__WEBPACK_IMPORTED_MODULE_1__["default"].commit('removeEquipments', {
           id: id
+        });
+      });
+    },
+    setPage: function setPage(page) {
+      _clients_EquipmentClient__WEBPACK_IMPORTED_MODULE_0__["default"].fetchAll({
+        page: page
+      }).then(function (response) {
+        _store__WEBPACK_IMPORTED_MODULE_1__["default"].commit('loadEquipments', {
+          equipments: response.data.data
+        });
+        _store__WEBPACK_IMPORTED_MODULE_1__["default"].commit('setPagination', {
+          page: response.data.meta.current_page,
+          totalPage: response.data.meta.last_page
         });
       });
     }
@@ -23507,6 +23529,8 @@ var _hoisted_10 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNo
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_RouterLink = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("RouterLink");
 
+  var _component_paginate = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("paginate");
+
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [_hoisted_2, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("table", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
     "onUpdate:modelValue": _cache[0] || (_cache[0] = function ($event) {
       return $data.filterList.id = $event;
@@ -23574,7 +23598,13 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     , ["to"])])])]);
   }), 256
   /* UNKEYED_FRAGMENT */
-  ))])]);
+  ))]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_paginate, {
+    "initial-page": _ctx.$store.state.pagination.page,
+    "page-count": _ctx.$store.state.pagination.totalPage,
+    "click-handler": $options.setPage
+  }, null, 8
+  /* PROPS */
+  , ["initial-page", "page-count", "click-handler"])]);
 }
 
 /***/ }),
@@ -23651,7 +23681,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   fetchAll: function fetchAll() {
-    return axios.get('/api/equipment');
+    var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {
+      page: 1
+    };
+    return axios.get('/api/equipment', {
+      params: {
+        page: options.page
+      }
+    });
   },
   fetchById: function fetchById(id) {
     return axios.get("/api/equipment/".concat(id));
@@ -23774,7 +23811,11 @@ var store = (0,vuex__WEBPACK_IMPORTED_MODULE_0__.createStore)({
   state: function state() {
     return {
       equipments: [],
-      options: []
+      options: [],
+      pagination: {
+        page: 1,
+        totalPage: 1
+      }
     };
   },
   mutations: {
@@ -23797,6 +23838,12 @@ var store = (0,vuex__WEBPACK_IMPORTED_MODULE_0__.createStore)({
         return value.id === data.id;
       });
       Object.assign(item, data);
+    },
+    setPagination: function setPagination(state, data) {
+      this.state.pagination = {
+        page: data.page,
+        totalPage: data.totalPage
+      };
     }
   },
   getters: {
@@ -50720,6 +50767,402 @@ function compileToFunction(template, options) {
 }
 (0,_vue_runtime_dom__WEBPACK_IMPORTED_MODULE_2__.registerRuntimeCompiler)(compileToFunction);
 
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vuejs-paginate-next/dist/vuejs-paginate-next.es.js":
+/*!*************************************************************************!*\
+  !*** ./node_modules/vuejs-paginate-next/dist/vuejs-paginate-next.es.js ***!
+  \*************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ Paginate)
+/* harmony export */ });
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
+
+var _export_sfc = (sfc, props) => {
+  const target = sfc.__vccOpts || sfc;
+  for (const [key, val] of props) {
+    target[key] = val;
+  }
+  return target;
+};
+const _sfc_main = {
+  data() {
+    return {
+      innerValue: 1
+    };
+  },
+  props: {
+    modelValue: {
+      type: Number
+    },
+    pageCount: {
+      type: Number,
+      required: true
+    },
+    initialPage: {
+      type: Number,
+      default: 1
+    },
+    forcePage: {
+      type: Number
+    },
+    clickHandler: {
+      type: Function,
+      default: () => {
+      }
+    },
+    pageRange: {
+      type: Number,
+      default: 3
+    },
+    marginPages: {
+      type: Number,
+      default: 1
+    },
+    prevText: {
+      type: String,
+      default: "Prev"
+    },
+    nextText: {
+      type: String,
+      default: "Next"
+    },
+    breakViewText: {
+      type: String,
+      default: "\u2026"
+    },
+    containerClass: {
+      type: String,
+      default: "pagination"
+    },
+    pageClass: {
+      type: String,
+      default: "page-item"
+    },
+    pageLinkClass: {
+      type: String,
+      default: "page-link"
+    },
+    prevClass: {
+      type: String,
+      default: "page-item"
+    },
+    prevLinkClass: {
+      type: String,
+      default: "page-link"
+    },
+    nextClass: {
+      type: String,
+      default: "page-item"
+    },
+    nextLinkClass: {
+      type: String,
+      default: "page-link"
+    },
+    breakViewClass: {
+      type: String
+    },
+    breakViewLinkClass: {
+      type: String
+    },
+    activeClass: {
+      type: String,
+      default: "active"
+    },
+    disabledClass: {
+      type: String,
+      default: "disabled"
+    },
+    noLiSurround: {
+      type: Boolean,
+      default: false
+    },
+    firstLastButton: {
+      type: Boolean,
+      default: false
+    },
+    firstButtonText: {
+      type: String,
+      default: "First"
+    },
+    lastButtonText: {
+      type: String,
+      default: "Last"
+    },
+    hidePrevNext: {
+      type: Boolean,
+      default: false
+    }
+  },
+  computed: {
+    selected: {
+      get: function() {
+        return this.modelValue || this.innerValue;
+      },
+      set: function(newValue) {
+        this.innerValue = newValue;
+      }
+    },
+    pages: function() {
+      let items = {};
+      if (this.pageCount <= this.pageRange) {
+        for (let index = 0; index < this.pageCount; index++) {
+          let page = {
+            index,
+            content: index + 1,
+            selected: index === this.selected - 1
+          };
+          items[index] = page;
+        }
+      } else {
+        const halfPageRange = Math.floor(this.pageRange / 2);
+        let setPageItem = (index) => {
+          let page = {
+            index,
+            content: index + 1,
+            selected: index === this.selected - 1
+          };
+          items[index] = page;
+        };
+        let setBreakView = (index) => {
+          let breakView = {
+            disabled: true,
+            breakView: true
+          };
+          items[index] = breakView;
+        };
+        for (let i = 0; i < this.marginPages; i++) {
+          setPageItem(i);
+        }
+        let selectedRangeLow = 0;
+        if (this.selected - halfPageRange > 0) {
+          selectedRangeLow = this.selected - 1 - halfPageRange;
+        }
+        let selectedRangeHigh = selectedRangeLow + this.pageRange - 1;
+        if (selectedRangeHigh >= this.pageCount) {
+          selectedRangeHigh = this.pageCount - 1;
+          selectedRangeLow = selectedRangeHigh - this.pageRange + 1;
+        }
+        for (let i = selectedRangeLow; i <= selectedRangeHigh && i <= this.pageCount - 1; i++) {
+          setPageItem(i);
+        }
+        if (selectedRangeLow > this.marginPages) {
+          setBreakView(selectedRangeLow - 1);
+        }
+        if (selectedRangeHigh + 1 < this.pageCount - this.marginPages) {
+          setBreakView(selectedRangeHigh + 1);
+        }
+        for (let i = this.pageCount - 1; i >= this.pageCount - this.marginPages; i--) {
+          setPageItem(i);
+        }
+      }
+      return items;
+    }
+  },
+  methods: {
+    handlePageSelected(selected) {
+      if (this.selected === selected)
+        return;
+      this.innerValue = selected;
+      this.$emit("update:modelValue", selected);
+      this.clickHandler(selected);
+    },
+    prevPage() {
+      if (this.selected <= 1)
+        return;
+      this.handlePageSelected(this.selected - 1);
+    },
+    nextPage() {
+      if (this.selected >= this.pageCount)
+        return;
+      this.handlePageSelected(this.selected + 1);
+    },
+    firstPageSelected() {
+      return this.selected === 1;
+    },
+    lastPageSelected() {
+      return this.selected === this.pageCount || this.pageCount === 0;
+    },
+    selectFirstPage() {
+      if (this.selected <= 1)
+        return;
+      this.handlePageSelected(1);
+    },
+    selectLastPage() {
+      if (this.selected >= this.pageCount)
+        return;
+      this.handlePageSelected(this.pageCount);
+    }
+  },
+  beforeMount() {
+    this.innerValue = this.initialPage;
+  },
+  beforeUpdate() {
+    if (this.forcePage === void 0)
+      return;
+    if (this.forcePage !== this.selected) {
+      this.selected = this.forcePage;
+    }
+  }
+};
+const _hoisted_1 = ["tabindex", "innerHTML"];
+const _hoisted_2 = ["tabindex", "innerHTML"];
+const _hoisted_3 = ["onClick", "onKeyup"];
+const _hoisted_4 = ["tabindex", "innerHTML"];
+const _hoisted_5 = ["tabindex", "innerHTML"];
+const _hoisted_6 = ["innerHTML"];
+const _hoisted_7 = ["innerHTML"];
+const _hoisted_8 = ["onClick", "onKeyup"];
+const _hoisted_9 = ["innerHTML"];
+const _hoisted_10 = ["innerHTML"];
+function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
+  return !$props.noLiSurround ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("ul", {
+    key: 0,
+    class: (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)($props.containerClass)
+  }, [
+    $props.firstLastButton ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("li", {
+      key: 0,
+      class: (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)([$props.pageClass, $options.firstPageSelected() ? $props.disabledClass : ""])
+    }, [
+      (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("a", {
+        onClick: _cache[0] || (_cache[0] = ($event) => $options.selectFirstPage()),
+        onKeyup: _cache[1] || (_cache[1] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.withKeys)(($event) => $options.selectFirstPage(), ["enter"])),
+        class: (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)($props.pageLinkClass),
+        tabindex: $options.firstPageSelected() ? -1 : 0,
+        innerHTML: $props.firstButtonText
+      }, null, 42, _hoisted_1)
+    ], 2)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("", true),
+    !($options.firstPageSelected() && $props.hidePrevNext) ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("li", {
+      key: 1,
+      class: (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)([$props.prevClass, $options.firstPageSelected() ? $props.disabledClass : ""])
+    }, [
+      (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("a", {
+        onClick: _cache[2] || (_cache[2] = ($event) => $options.prevPage()),
+        onKeyup: _cache[3] || (_cache[3] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.withKeys)(($event) => $options.prevPage(), ["enter"])),
+        class: (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)($props.prevLinkClass),
+        tabindex: $options.firstPageSelected() ? -1 : 0,
+        innerHTML: $props.prevText
+      }, null, 42, _hoisted_2)
+    ], 2)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("", true),
+    ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($options.pages, (page) => {
+      return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("li", {
+        key: page.index,
+        class: (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)([$props.pageClass, page.selected ? $props.activeClass : "", page.disabled ? $props.disabledClass : "", page.breakView ? $props.breakViewClass : ""])
+      }, [
+        page.breakView ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("a", {
+          key: 0,
+          class: (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)([$props.pageLinkClass, $props.breakViewLinkClass]),
+          tabindex: "0"
+        }, [
+          (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderSlot)(_ctx.$slots, "breakViewContent", {}, () => [
+            (0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)((0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.breakViewText), 1)
+          ])
+        ], 2)) : page.disabled ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("a", {
+          key: 1,
+          class: (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)($props.pageLinkClass),
+          tabindex: "0"
+        }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(page.content), 3)) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("a", {
+          key: 2,
+          onClick: ($event) => $options.handlePageSelected(page.index + 1),
+          onKeyup: (0,vue__WEBPACK_IMPORTED_MODULE_0__.withKeys)(($event) => $options.handlePageSelected(page.index + 1), ["enter"]),
+          class: (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)($props.pageLinkClass),
+          tabindex: "0"
+        }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(page.content), 43, _hoisted_3))
+      ], 2);
+    }), 128)),
+    !($options.lastPageSelected() && $props.hidePrevNext) ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("li", {
+      key: 2,
+      class: (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)([$props.nextClass, $options.lastPageSelected() ? $props.disabledClass : ""])
+    }, [
+      (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("a", {
+        onClick: _cache[4] || (_cache[4] = ($event) => $options.nextPage()),
+        onKeyup: _cache[5] || (_cache[5] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.withKeys)(($event) => $options.nextPage(), ["enter"])),
+        class: (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)($props.nextLinkClass),
+        tabindex: $options.lastPageSelected() ? -1 : 0,
+        innerHTML: $props.nextText
+      }, null, 42, _hoisted_4)
+    ], 2)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("", true),
+    $props.firstLastButton ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("li", {
+      key: 3,
+      class: (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)([$props.pageClass, $options.lastPageSelected() ? $props.disabledClass : ""])
+    }, [
+      (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("a", {
+        onClick: _cache[6] || (_cache[6] = ($event) => $options.selectLastPage()),
+        onKeyup: _cache[7] || (_cache[7] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.withKeys)(($event) => $options.selectLastPage(), ["enter"])),
+        class: (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)($props.pageLinkClass),
+        tabindex: $options.lastPageSelected() ? -1 : 0,
+        innerHTML: $props.lastButtonText
+      }, null, 42, _hoisted_5)
+    ], 2)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("", true)
+  ], 2)) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", {
+    key: 1,
+    class: (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)($props.containerClass)
+  }, [
+    $props.firstLastButton ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("a", {
+      key: 0,
+      onClick: _cache[8] || (_cache[8] = ($event) => $options.selectFirstPage()),
+      onKeyup: _cache[9] || (_cache[9] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.withKeys)(($event) => $options.selectFirstPage(), ["enter"])),
+      class: (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)([$props.pageLinkClass, $options.firstPageSelected() ? $props.disabledClass : ""]),
+      tabindex: "0",
+      innerHTML: $props.firstButtonText
+    }, null, 42, _hoisted_6)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("", true),
+    !($options.firstPageSelected() && $props.hidePrevNext) ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("a", {
+      key: 1,
+      onClick: _cache[10] || (_cache[10] = ($event) => $options.prevPage()),
+      onKeyup: _cache[11] || (_cache[11] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.withKeys)(($event) => $options.prevPage(), ["enter"])),
+      class: (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)([$props.prevLinkClass, $options.firstPageSelected() ? $props.disabledClass : ""]),
+      tabindex: "0",
+      innerHTML: $props.prevText
+    }, null, 42, _hoisted_7)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("", true),
+    ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($options.pages, (page) => {
+      return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, [
+        page.breakView ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("a", {
+          key: page.index,
+          class: (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)([$props.pageLinkClass, $props.breakViewLinkClass, page.disabled ? $props.disabledClass : ""]),
+          tabindex: "0"
+        }, [
+          (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderSlot)(_ctx.$slots, "breakViewContent", {}, () => [
+            (0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)((0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.breakViewText), 1)
+          ])
+        ], 2)) : page.disabled ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("a", {
+          key: page.index,
+          class: (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)([$props.pageLinkClass, page.selected ? $props.activeClass : "", $props.disabledClass]),
+          tabindex: "0"
+        }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(page.content), 3)) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("a", {
+          key: page.index,
+          onClick: ($event) => $options.handlePageSelected(page.index + 1),
+          onKeyup: (0,vue__WEBPACK_IMPORTED_MODULE_0__.withKeys)(($event) => $options.handlePageSelected(page.index + 1), ["enter"]),
+          class: (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)([$props.pageLinkClass, page.selected ? $props.activeClass : ""]),
+          tabindex: "0"
+        }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(page.content), 43, _hoisted_8))
+      ], 64);
+    }), 256)),
+    !($options.lastPageSelected() && $props.hidePrevNext) ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("a", {
+      key: 2,
+      onClick: _cache[12] || (_cache[12] = ($event) => $options.nextPage()),
+      onKeyup: _cache[13] || (_cache[13] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.withKeys)(($event) => $options.nextPage(), ["enter"])),
+      class: (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)([$props.nextLinkClass, $options.lastPageSelected() ? $props.disabledClass : ""]),
+      tabindex: "0",
+      innerHTML: $props.nextText
+    }, null, 42, _hoisted_9)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("", true),
+    $props.firstLastButton ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("a", {
+      key: 3,
+      onClick: _cache[14] || (_cache[14] = ($event) => $options.selectLastPage()),
+      onKeyup: _cache[15] || (_cache[15] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.withKeys)(($event) => $options.selectLastPage(), ["enter"])),
+      class: (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)([$props.pageLinkClass, $options.lastPageSelected() ? $props.disabledClass : ""]),
+      tabindex: "0",
+      innerHTML: $props.lastButtonText
+    }, null, 42, _hoisted_10)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("", true)
+  ], 2));
+}
+var Paginate = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render]]);
 
 
 
