@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Handlers;
 
-use App\Exceptions\EquipmentUpdateException;
 use App\Interfaces\UpdateEquipmentDataInterface;
 use App\Models\Equipment;
 use App\Rules\MaskValidation;
+use Illuminate\Validation\ValidationException;
 use Validator;
 
 /**
@@ -32,33 +32,34 @@ final class EquipmentUpdateHandler
 
     /**
      * @return Equipment
-     * @throws EquipmentUpdateException
+     * @throws ValidationException
      */
     public function handle(): Equipment
     {
         if ($this->equipment->serial_number !== $this->updateEquipmentData->getSerialNumber()) {
             $this->equipment->serial_number = $this->updateEquipmentData->getSerialNumber();
-            $validator = Validator::make(
-                [
-                    'serialNumber' => $this->updateEquipmentData->getSerialNumber(),
-                ],
-                [
-                    'serialNumber' => 'unique:equipment,serial_number',
-                ],
-                [
-                    'serialNumber.unique' => 'Данный серийный номер уже занят'
-                ]
-            );
-
-            if ($validator->errors()->isNotEmpty()) {
-                throw new EquipmentUpdateException($validator->errors());
-            }
+            Validator::validate([
+                'serialNumber' => $this->updateEquipmentData->getSerialNumber(),
+            ], [
+                'serialNumber' => 'unique:equipment,serial_number',
+            ], [
+                'serialNumber.unique' => 'Данный серийный номер уже занят'
+            ]);
         }
+
         if ($this->equipment->equipment_type_id !== $this->updateEquipmentData->getEquipmentTypeId()) {
             $this->equipment->equipment_type_id = $this->updateEquipmentData->getEquipmentTypeId();
+
+            Validator::validate([
+                'equipmentTypeId' => $this->updateEquipmentData->getEquipmentTypeId(),
+            ], [
+                'equipmentTypeId' => 'exists:equipment_types,id',
+            ], [
+                'equipmentTypeId.exists' => 'Тип оборудования не существует'
+            ]);
         }
 
-        $validator = Validator::make(
+        Validator::validate(
             [
                 'serialNumber' => $this->updateEquipmentData->getSerialNumber(),
             ],
@@ -69,10 +70,6 @@ final class EquipmentUpdateHandler
                 'serialNumber' => 'Не валидная маска оборужования'
             ]
         );
-
-        if ($validator->errors()->isNotEmpty()) {
-            throw new EquipmentUpdateException($validator->errors());
-        }
 
         return $this->equipment;
     }

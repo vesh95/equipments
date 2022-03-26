@@ -7,6 +7,7 @@ use App\Models\Equipment;
 use App\Models\EquipmentType;
 use App\Rules\MaskValidation;
 use Illuminate\Database\QueryException;
+use Illuminate\Validation\ValidationException;
 use Validator;
 
 /**
@@ -27,6 +28,7 @@ final class CreateEquipmentsHandler
 
     /**
      * @return array
+     * @throws ValidationException
      */
     public function handle(): array
     {
@@ -34,6 +36,16 @@ final class CreateEquipmentsHandler
             'equipments' => [],
             'invalidSerials' => [],
         ];
+
+        Validator::validate([
+            'equipmentTypeId' => $this->equipmentListData->getEquipmentTypeId()
+        ], [
+            'equipmentTypeId' => 'required|exists:equipment_types,id',
+        ], [
+            'equipmentTypeId.required' => 'Выберите тип оборудования',
+            'equipmentTypeId.exists' => 'Выберете тип оборорудования из списка',
+        ]);
+
         $equipmentTypeModel = EquipmentType::where([
             'id' => $this->equipmentListData->getEquipmentTypeId()
         ])
@@ -46,16 +58,13 @@ final class CreateEquipmentsHandler
                 'note' => $this->equipmentListData->getNote(),
             ]);
 
-            $error = Validator::make(
-                [
-                    $equipmentTypeModel->name => $serialNumber
+            $error = Validator::make([
+                $equipmentTypeModel->name => $serialNumber
+            ], [
+                $equipmentTypeModel->name => [
+                    new MaskValidation($equipmentModel),
                 ],
-                [
-                    $equipmentTypeModel->name => [
-                        new MaskValidation($equipmentModel),
-                    ],
-                ]
-            )->errors();
+            ])->errors();
             if ($error->isNotEmpty()) {
                 $result['invalidSerials'][$key] = [
                     'typeId' => $equipmentTypeModel->id,

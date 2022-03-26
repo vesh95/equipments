@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Exceptions\EquipmentUpdateException;
 use App\Handlers\CreateEquipmentsHandler;
 use App\Handlers\EquipmentUpdateHandler;
 use App\Http\Requests\CreateEquipmentRequest;
@@ -16,6 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
+use Illuminate\Validation\ValidationException;
 
 /**
  * EquipmentController class
@@ -40,6 +40,7 @@ class EquipmentController extends Controller
      *
      * @param CreateEquipmentRequest $request
      * @return CreatedEquipmentResource
+     * @throws ValidationException
      */
     public function store(CreateEquipmentRequest $request): CreatedEquipmentResource
     {
@@ -65,16 +66,13 @@ class EquipmentController extends Controller
      * @param PatchEquipmentRequest $request
      * @param Equipment $equipment
      * @return Response|EquipmentResource
+     * @throws ValidationException
      */
     public function update(PatchEquipmentRequest $request, Equipment $equipment): Response|EquipmentResource
     {
-        try {
-            $equipment = (new EquipmentUpdateHandler($equipment, $request))->handle();
+        $equipment = (new EquipmentUpdateHandler($equipment, $request))->handle();
 
-            return EquipmentResource::make($equipment);
-        } catch (EquipmentUpdateException $e) {
-            return response($e->getErrors(), 422);
-        }
+        return EquipmentResource::make($equipment);
     }
 
     /**

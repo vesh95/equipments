@@ -33,8 +33,9 @@ class PatchEquipmentRequest extends FormRequest implements UpdateEquipmentDataIn
     public function rules(): array
     {
         return [
-            'equipmentTypeId' => 'exists:equipment_types,id',
-            'note' => 'string|nullable'
+            'equipmentTypeId' => 'integer|nullable',
+            'serialNumber' => 'string|nullable',
+            'note' => 'string|nullable',
         ];
     }
 
