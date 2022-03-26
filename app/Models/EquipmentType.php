@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $name
  * @property string $mask
  * @property Equipment[] $equipments
+ *
  * @method static Builder|EquipmentType newModelQuery()
  * @method static Builder|EquipmentType newQuery()
  * @method static Builder|EquipmentType query()
@@ -27,6 +28,9 @@ class EquipmentType extends Model
 {
     use HasFactory;
 
+    /**
+     * Mask items equals regex
+     */
     private const MASK_REGEX_ITEMS = [
         'N' => '[0-9]',
         'A' => '[A-Z]',
@@ -35,6 +39,11 @@ class EquipmentType extends Model
         'Z' => '[\-\_\@]'
     ];
 
+    /**
+     * Returns mask items translated to regex
+     *
+     * @return string
+     */
     public function getMaskRegex(): string
     {
         $regex = '';
@@ -45,6 +54,9 @@ class EquipmentType extends Model
         return '/^' . $regex . '$/';
     }
 
+    /**
+     * @return HasMany
+     */
     public function equipments(): HasMany
     {
         return $this->hasMany(

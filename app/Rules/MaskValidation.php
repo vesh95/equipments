@@ -11,7 +11,7 @@ use Illuminate\Contracts\Validation\Rule;
 class MaskValidation implements Rule
 {
     /**
-     * @var EquipmentType|EquipmentType[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model|mixed|object|null
+     * @var EquipmentType
      */
     private EquipmentType $equipmentType;
 

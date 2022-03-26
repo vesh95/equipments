@@ -18,27 +18,34 @@ use Illuminate\Support\Carbon;
  * @property string $serial_number
  * @property string $note
  * @property EquipmentType $equipmentType
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ *
  * @method static Builder|Equipment newModelQuery()
  * @method static Builder|Equipment newQuery()
  * @method static Builder|Equipment query()
- * @mixin Eloquent
- * @property Carbon|null $created_at
- * @property Carbon|null $updated_at
  * @method static Builder|Equipment whereCreatedAt($value)
  * @method static Builder|Equipment whereEquipmentTypeId($value)
  * @method static Builder|Equipment whereId($value)
  * @method static Builder|Equipment whereNote($value)
  * @method static Builder|Equipment whereSerialNumber($value)
  * @method static Builder|Equipment whereUpdatedAt($value)
+ * @mixin Eloquent
  */
 class Equipment extends Model
 {
+    /**
+     * @var string[]
+     */
     protected $fillable = [
         'equipment_type_id',
         'serial_number',
         'note'
     ];
 
+    /**
+     * @return BelongsTo
+     */
     public function equipmentType(): BelongsTo
     {
         return $this->belongsTo(
