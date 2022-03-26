@@ -52,14 +52,23 @@
                 </td>
             </tr>
         </table>
+        <paginate
+            :initial-page="$store.state.pagination.page"
+            :page-count="$store.state.pagination.totalPage"
+            :click-handler="setPage"
+        />
     </div>
 </template>
 
 <script>
 import EquipmentClient from "../clients/EquipmentClient";
 import store from "../store";
+import Paginate from "vuejs-paginate-next";
 
 export default {
+    components: {
+        Paginate
+    },
     data() {
         return {
             filterList: {
@@ -78,6 +87,17 @@ export default {
                 store.commit('removeEquipments', {id})
             })
         },
+        setPage(page) {
+            EquipmentClient.fetchAll({ page: page }).then((response) => {
+                store.commit('loadEquipments', {
+                    equipments: response.data.data
+                })
+                store.commit('setPagination', {
+                    page: response.data.meta.current_page,
+                    totalPage: response.data.meta.last_page
+                })
+            })
+        }
     },
     computed: {
         filteredList() {

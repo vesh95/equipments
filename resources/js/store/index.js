@@ -1,14 +1,18 @@
-import { createStore } from 'vuex'
+import {createStore} from 'vuex'
 
 const store = createStore({
     state() {
         return {
             equipments: [],
             options: [],
+            pagination: {
+                page: 1,
+                totalPage: 1,
+            }
         }
     },
     mutations: {
-        loadEquipments (state, data) {
+        loadEquipments(state, data) {
             state.equipments = data.equipments
         },
         loadOptions(state, data) {
@@ -24,6 +28,12 @@ const store = createStore({
         updateEquipment(state, data) {
             const item = state.equipments.find((value) => value.id === data.id)
             Object.assign(item, data)
+        },
+        setPagination(state, data) {
+            this.state.pagination = {
+                page: data.page,
+                totalPage: data.totalPage
+            }
         }
     },
     getters: {

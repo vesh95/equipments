@@ -27,6 +27,10 @@ export default {
                 store.commit('loadEquipments', {
                     equipments: response.data.data
                 })
+                store.commit('setPagination', {
+                    page: response.data.meta.current_page,
+                    totalPage: response.data.meta.last_page
+                })
             })
 
         EquipmentTypeClient.fetchAll()

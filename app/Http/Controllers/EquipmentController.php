@@ -31,7 +31,7 @@ class EquipmentController extends Controller
     public function index(Request $request): AnonymousResourceCollection
     {
         return EquipmentResource::collection(Equipment::paginate(
-            $request->query('perPage', 15)
+            $request->query('perPage', 5)
         ));
     }
 
